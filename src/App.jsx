@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import StudentDashboard from './components/StudentDashboard';
 import TeacherDashboard from './components/TeacherDashboard';
@@ -85,17 +86,44 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="App">
+    <div className="App">
+      <Router>
         <Routes>
-          <Route path="/" element={<StudentDashboard user={null} onLogout={handleLogout} />} />
-          <Route path="/login" element={user ? <Navigate to={`/${user.role}`} /> : <LoginPage onLogin={handleLogin} />} />
-          <Route path="/student" element={<StudentDashboard user={{ username: 'Demo Student', role: 'student' }} onLogout={handleLogout} />} />
-          <Route path="/teacher" element={user && user.role === 'teacher' ? <TeacherDashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-          <Route path="/admin" element={user && user.role === 'admin' ? <AdminDashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+          <Route
+            path="/"
+            element={user ? renderDashboard() : <LoginPage onLogin={handleLogin} />}
+          />
+          <Route
+            path="/teacher"
+            element={
+              <TeacherDashboard
+                user={user || { username: 'Teacher', role: 'teacher' }}
+                onLogout={handleLogout}
+              />
+            }
+          />
+          <Route
+            path="/student"
+            element={
+              <StudentDashboard
+                user={user || { username: 'Student', role: 'student' }}
+                onLogout={handleLogout}
+              />
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminDashboard
+                user={user || { username: 'Admin', role: 'admin' }}
+                onLogout={handleLogout}
+              />
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </div>
-    </Router>
+      </Router>
+    </div>
   );
 }
 
